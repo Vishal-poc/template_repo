@@ -1,0 +1,43 @@
+name: Fetch Secret from AWS Secrets Manager
+
+on: [push]
+
+jobs:
+  fetch-secret:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::577638356286:role/awstogithub
+        aws-region: us-east-1
+
+    - name: Install AWS CLI
+      run: sudo apt-get install -y awscli
+
+    - name: Fetch and display secret directly
+      run: |
+        aws secretsmanager get-secret-value --secret-id githubsecret --region us-east-1
+
+    - name: Fetch secret from AWS Secrets Manager
+      id: fetch-secret
+      uses: aws-actions/aws-secrets-manager-action@v1
+      with:
+        secret_id: githubsecret
+        region: us-east-1
+
+    - name: Debug outputs
+      run: echo ${{ toJSON(steps.fetch-secret.outputs) }}
+
+    - name: Use the secret
+      run: echo $MY_SECRET
+      env:
+        MY_SECRET: ${{ steps.fetch-secret.outputs.secret }}
