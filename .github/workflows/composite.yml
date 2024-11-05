@@ -24,8 +24,9 @@ jobs:
       id: fetch-secret
       uses: aws-actions/aws-secrets-manager-action@v1
       with:
-        secret-id: comp-secret
-        region: us-east-1
+        secret-ids: | 
+          comp-secret
+        parse-json-secrets: true
 
     - name: Parse and Use Secrets
       run: |
