@@ -24,7 +24,7 @@ jobs:
       id: fetch-secret
       uses: aws-actions/aws-secrets-manager-action@v1
       with:
-        secret-id: comp-secret-dwWQoF
+        secret-id: comp-secret
         region: us-east-1
 
     - name: Parse and Use Secrets
